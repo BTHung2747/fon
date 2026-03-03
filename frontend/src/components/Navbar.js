@@ -11,17 +11,10 @@ import styles from './Navbar.module.css';
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const pathname = usePathname();
-  const [unreadCount, setUnreadCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      notificationsAPI.list({ unreadOnly: 'true' })
-        .then(({ data }) => setUnreadCount(data.data.unreadCount))
-        .catch(() => {});
-    }
-  }, [isAuthenticated, pathname]);
+ 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
