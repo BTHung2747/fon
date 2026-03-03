@@ -32,7 +32,7 @@ export default function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
+  // biến đổi giao diện theo quyền hạn người dùng
   const navItems = isAuthenticated ? getNavItems(user.role) : [];
 
   const handleLogout = () => {
@@ -44,16 +44,12 @@ export default function Navbar() {
 
   return (
     <nav className={styles.navbar}>
-
-      {/* ── Logo ── */}
       <Link href="/" className={styles.logo}>
         <span className={styles.logoGradient}>SportBook</span>
       </Link>
-
-      {/* ── Center: nav links + user ── */}
       <div className={styles.navCenter}>
 
-        {/* Nav links */}
+        {/* so sánh role để hiển thị*/}
         {navItems.map((item) => (
           <Link
             key={item.href}

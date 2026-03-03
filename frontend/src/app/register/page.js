@@ -40,10 +40,16 @@ function RegisterForm() {
 
     return (
         <div className={styles.authPage}>
+            <div className={styles.authBackground}>
+                <div className={styles.gradientOrb1}></div>
+                <div className={styles.gradientOrb2}></div>
+            </div>
+
             <div className={styles.authCard}>
                 <div className={styles.authHeader}>
-                    <h1 className={styles.authTitle}>Tạo tài khoản</h1>
-                    <p className={styles.authSubtitle}>Tham gia SportApp ngay hôm nay</p>
+                    <h1 className={styles.authLogo}>SportBooking</h1>
+                    <h2 className={styles.authTitle}>Tạo tài khoản</h2>
+                    <p className={styles.authSubtitle}>Tham gia SportBooking ngay hôm nay</p>
                 </div>
 
                 {/* Role selector */}
@@ -68,15 +74,19 @@ function RegisterForm() {
                     </button>
                 </div>
 
-                {error && <div className={styles.errorBox}>{error}</div>}
+                {error && (
+                    <div className={styles.errorBox}>
+                        <span className={styles.errorIcon}>⚠️</span>
+                        {error}
+                    </div>
+                )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label">Họ và tên</label>
+                <form onSubmit={handleSubmit} className={styles.authForm}>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Họ và tên</label>
                         <input
-                            id="register-name"
                             type="text"
-                            className="form-input"
+                            className={styles.formInput}
                             placeholder="Nguyễn Văn A"
                             value={form.fullName}
                             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
@@ -84,12 +94,11 @@ function RegisterForm() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Email</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Email</label>
                         <input
-                            id="register-email"
                             type="email"
-                            className="form-input"
+                            className={styles.formInput}
                             placeholder="your@email.com"
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -97,24 +106,22 @@ function RegisterForm() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Số điện thoại</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Số điện thoại</label>
                         <input
-                            id="register-phone"
                             type="tel"
-                            className="form-input"
+                            className={styles.formInput}
                             placeholder="0901234567"
                             value={form.phone}
                             onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Mật khẩu</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Mật khẩu</label>
                         <input
-                            id="register-password"
                             type="password"
-                            className="form-input"
+                            className={styles.formInput}
                             placeholder="Tối thiểu 6 ký tự"
                             value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -123,13 +130,8 @@ function RegisterForm() {
                         />
                     </div>
 
-                    <button
-                        id="register-submit"
-                        type="submit"
-                        className={`btn btn-primary ${styles.authBtn}`}
-                        disabled={loading}
-                    >
-                        {loading ? <span className="spinner" /> : 'Đăng ký'}
+                    <button type="submit" className={styles.authBtn} disabled={loading}>
+                        {loading ? <span className={styles.spinner}></span> : 'Đăng ký'}
                     </button>
                 </form>
 
@@ -143,7 +145,11 @@ function RegisterForm() {
 
 export default function RegisterPage() {
     return (
-        <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="spinner spinner-lg" /></div>}>
+        <Suspense fallback={
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className={styles.spinner} style={{ width: '40px', height: '40px' }}></div>
+            </div>
+        }>
             <RegisterForm />
         </Suspense>
     );

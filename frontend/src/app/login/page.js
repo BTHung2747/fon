@@ -21,7 +21,6 @@ export default function LoginPage() {
         try {
             const user = await login(form.email, form.password);
 
-            // Redirect based on role
             if (user.role === 'ADMIN') router.push('/admin/venues');
             else if (user.role === 'OWNER') router.push('/owner/venues');
             else router.push('/venues');
@@ -32,23 +31,37 @@ export default function LoginPage() {
         }
     };
 
+    const fillDemo = (email) => {
+        setForm({ email, password: 'password123' });
+    };
+
     return (
         <div className={styles.authPage}>
+            <div className={styles.authBackground}>
+                <div className={styles.gradientOrb1}></div>
+                <div className={styles.gradientOrb2}></div>
+            </div>
+
             <div className={styles.authCard}>
                 <div className={styles.authHeader}>
-                    <h1 className={styles.authTitle}>Đăng nhập</h1>
-                    <p className={styles.authSubtitle}>Chào mừng bạn quay lại SportApp</p>
+                    <h1 className={styles.authLogo}>SportBooking</h1>
+                    <h2 className={styles.authTitle}>Đăng nhập</h2>
+                    <p className={styles.authSubtitle}>Chào mừng bạn quay lại</p>
                 </div>
 
-                {error && <div className={styles.errorBox}>{error}</div>}
+                {error && (
+                    <div className={styles.errorBox}>
+                        <span className={styles.errorIcon}>⚠️</span>
+                        {error}
+                    </div>
+                )}
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label">Email</label>
+                <form onSubmit={handleSubmit} className={styles.authForm}>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Email</label>
                         <input
-                            id="login-email"
                             type="email"
-                            className="form-input"
+                            className={styles.formInput}
                             placeholder="your@email.com"
                             value={form.email}
                             onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -56,57 +69,41 @@ export default function LoginPage() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label">Mật khẩu</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel}>Mật khẩu</label>
                         <input
-                            id="login-password"
                             type="password"
-                            className="form-input"
-                            placeholder="Nhập mật khẩu"
+                            className={styles.formInput}
+                            placeholder="••••••••"
                             value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })}
                             required
                         />
                     </div>
 
-                    <button
-                        id="login-submit"
-                        type="submit"
-                        className={`btn btn-primary ${styles.authBtn}`}
-                        disabled={loading}
-                    >
-                        {loading ? <span className="spinner" /> : 'Đăng nhập'}
+                    <button type="submit" className={styles.authBtn} disabled={loading}>
+                        {loading ? <span className={styles.spinner}></span> : 'Đăng nhập'}
                     </button>
                 </form>
 
-                <p className={styles.authSwitch}>
-                    Chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link>
-                </p>
-
-                {/* Demo accounts */}
                 <div className={styles.demoBox}>
-                    <p className={styles.demoTitle}>Demo accounts (password: password123)</p>
+                    <p className={styles.demoTitle}>Tài khoản demo (password: password123)</p>
                     <div className={styles.demoAccounts}>
-                        <button
-                            className={styles.demoBtn}
-                            onClick={() => setForm({ email: 'admin@sportapp.com', password: 'password123' })}
-                        >
+                        <button className={styles.demoBtn} onClick={() => fillDemo('admin@sportapp.com')}>
                             👑 Admin
                         </button>
-                        <button
-                            className={styles.demoBtn}
-                            onClick={() => setForm({ email: 'owner@sportapp.com', password: 'password123' })}
-                        >
+                        <button className={styles.demoBtn} onClick={() => fillDemo('owner@sportapp.com')}>
                             🏠 Owner
                         </button>
-                        <button
-                            className={styles.demoBtn}
-                            onClick={() => setForm({ email: 'khach1@sportapp.com', password: 'password123' })}
-                        >
+                        <button className={styles.demoBtn} onClick={() => fillDemo('khach1@sportapp.com')}>
                             👤 Customer
                         </button>
                     </div>
                 </div>
+
+                <p className={styles.authSwitch}>
+                    Chưa có tài khoản? <Link href="/register">Đăng ký ngay</Link>
+                </p>
             </div>
         </div>
     );

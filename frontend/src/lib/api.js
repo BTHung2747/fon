@@ -7,7 +7,7 @@ const api = axios.create({
     headers: { 'Content-Type': 'application/json' },
 });
 
-// Add auth token to requests
+
 api.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
         const token = localStorage.getItem('sportapp_token');
@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Handle auth errors
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {
