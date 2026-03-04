@@ -15,6 +15,7 @@ export default function ProfilePage() {
     const [editing, setEditing] = useState(false);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [activeTab, setActiveTab] = useState('overview');
 
     useEffect(() => {
         if (!authLoading && !isAuthenticated) { router.push('/login'); return; }
@@ -47,157 +48,270 @@ export default function ProfilePage() {
     const roleLabels = {
         ADMIN: { label: 'Quản trị viên', icon: '👑', color: '#FF9F0A' },
         OWNER: { label: 'Chủ sân', icon: '🏠', color: '#30D158' },
-        CUSTOMER: { label: 'Khách hàng', icon: '👤', color: '#0071E3' },
+        CUSTOMER: { label: 'Khách hàng', icon: '👤', color: '#0066FF' },
     };
     const role = roleLabels[user.role] || roleLabels.CUSTOMER;
 
     return (
         <div className={styles.page}>
-            <div className="container">
-                <div className={styles.layout}>
-                    {/* Profile Card */}
-                    <div className={styles.profileCard}>
-                        <div className={styles.avatarSection}>
-                            <div className={styles.avatarLarge}>
-                                {user.avatarUrl ? (
-                                    <img src={user.avatarUrl} alt={user.fullName} />
-                                ) : (
-                                    user.fullName?.charAt(0)?.toUpperCase()
-                                )}
-                            </div>
-                            <h1 className={styles.userName}>{user.fullName}</h1>
-                            <div className={styles.roleBadge} style={{ background: role.color + '20', color: role.color }}>
-                                {role.icon} {role.label}
-                            </div>
-                        </div>
-
-                        <div className={styles.infoGrid}>
-                            <div className={styles.infoItem}>
-                                <span className={styles.infoLabel}>Email</span>
-                                <span className={styles.infoValue}>📧 {user.email}</span>
-                            </div>
-                            <div className={styles.infoItem}>
-                                <span className={styles.infoLabel}>Số điện thoại</span>
-                                <span className={styles.infoValue}>📱 {user.phone || 'Chưa có'}</span>
-                            </div>
-                            <div className={styles.infoItem}>
-                                <span className={styles.infoLabel}>Xác thực</span>
-                                <span className={styles.infoValue}>
-                                    {user.isVerified ? '✅ Đã xác thực' : '⏳ Chưa xác thực'}
-                                </span>
-                            </div>
-                            <div className={styles.infoItem}>
-                                <span className={styles.infoLabel}>Tham gia</span>
-                                <span className={styles.infoValue}>
-                                    📅 {new Date(user.createdAt).toLocaleDateString('vi-VN')}
-                                </span>
-                            </div>
-                        </div>
-
-                        {!editing && (
-                            <button className="btn btn-primary" style={{ width: '100%' }} onClick={() => setEditing(true)}>
+            {/* Hero Profile Section */}
+            <div className={styles.heroSection}>
+                <div className={styles.heroContainer}>
+                    {!editing && (
+                        <div className={styles.editButtonWrapper}>
+                            <button className={styles.editButton} onClick={() => setEditing(true)}>
                                 ✏️ Chỉnh sửa hồ sơ
                             </button>
-                        )}
-                    </div>
-
-                    {/* Edit Form */}
-                    {editing && (
-                        <div className={styles.editCard}>
-                            <h2 className="heading-sm">Chỉnh sửa hồ sơ</h2>
-
-                            {message && (
-                                <div className={styles.message} style={{ color: message.startsWith('✅') ? 'var(--success)' : 'var(--danger)' }}>
-                                    {message}
-                                </div>
-                            )}
-
-                            <form onSubmit={handleSave}>
-                                <div className="form-group">
-                                    <label className="form-label">Họ và tên</label>
-                                    <input
-                                        type="text"
-                                        className="form-input"
-                                        value={form.fullName}
-                                        onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Số điện thoại</label>
-                                    <input
-                                        type="tel"
-                                        className="form-input"
-                                        placeholder="0901234567"
-                                        value={form.phone}
-                                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                                    />
-                                </div>
-
-                                <div className="form-group">
-                                    <label className="form-label">Avatar URL</label>
-                                    <input
-                                        type="url"
-                                        className="form-input"
-                                        placeholder="https://example.com/avatar.jpg"
-                                        value={form.avatarUrl}
-                                        onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
-                                    />
-                                </div>
-
-                                <div style={{ display: 'flex', gap: 12 }}>
-                                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={saving}>
-                                        {saving ? <span className="spinner" /> : '💾 Lưu'}
-                                    </button>
-                                    <button type="button" className="btn btn-ghost" onClick={() => { setEditing(false); setMessage(''); }}>
-                                        Hủy
-                                    </button>
-                                </div>
-                            </form>
                         </div>
                     )}
 
-                    {/* Quick Links */}
-                    <div className={styles.quickLinks}>
-                        <h3 className="heading-sm">Truy cập nhanh</h3>
-                        <div className={styles.linkGrid}>
-                            {user.role === 'CUSTOMER' && (
-                                <>
-                                    <button className={styles.linkCard} onClick={() => router.push('/bookings')}>
-                                        <span>📅</span><strong>Đặt sân của tôi</strong>
-                                    </button>
-                                    <button className={styles.linkCard} onClick={() => router.push('/matchmaking')}>
-                                        <span>🤝</span><strong>Ghép trận</strong>
-                                    </button>
-                                </>
+                    <div className={styles.heroContent}>
+                        <div className={styles.avatarLarge}>
+                            {user.avatarUrl ? (
+                                <img src={user.avatarUrl} alt={user.fullName} />
+                            ) : (
+                                user.fullName?.charAt(0)?.toUpperCase()
                             )}
-                            {user.role === 'OWNER' && (
-                                <>
-                                    <button className={styles.linkCard} onClick={() => router.push('/owner/venues')}>
-                                        <span>🏟️</span><strong>Quản lý sân</strong>
-                                    </button>
-                                    <button className={styles.linkCard} onClick={() => router.push('/owner/bookings')}>
-                                        <span>📋</span><strong>Lịch đặt sân</strong>
-                                    </button>
-                                </>
-                            )}
-                            {user.role === 'ADMIN' && (
-                                <>
-                                    <button className={styles.linkCard} onClick={() => router.push('/admin/venues')}>
-                                        <span>✅</span><strong>Duyệt sân</strong>
-                                    </button>
-                                    <button className={styles.linkCard} onClick={() => router.push('/admin/users')}>
-                                        <span>👥</span><strong>Quản lý users</strong>
-                                    </button>
-                                </>
-                            )}
-                            <button className={styles.linkCard} onClick={() => router.push('/chat')}>
-                                <span>💬</span><strong>Tin nhắn</strong>
-                            </button>
-                            <button className={styles.linkCard} onClick={() => router.push('/notifications')}>
-                                <span>🔔</span><strong>Thông báo</strong>
-                            </button>
+                        </div>
+                        <h1 className={styles.userName}>{user.fullName}</h1>
+                        <div className={styles.roleBadge} style={{ background: role.color + '33', color: role.color }}>
+                            {role.icon} {role.label}
+                        </div>
+                    </div>
+
+                    <div className={styles.infoStats}>
+                        <div className={styles.statCard}>
+                            <span className={styles.statIcon}>📧</span>
+                            <div className={styles.statContent}>
+                                <span className={styles.statLabel}>Email</span>
+                                <span className={styles.statValue}>{user.email}</span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <span className={styles.statIcon}>📱</span>
+                            <div className={styles.statContent}>
+                                <span className={styles.statLabel}>Số điện thoại</span>
+                                <span className={styles.statValue}>{user.phone || 'Chưa có'}</span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <span className={styles.statIcon}>{user.isVerified ? '✅' : '⏳'}</span>
+                            <div className={styles.statContent}>
+                                <span className={styles.statLabel}>Xác thực</span>
+                                <span className={styles.statValue} style={{ color: user.isVerified ? '#10B981' : '#6B7280' }}>
+                                    {user.isVerified ? 'Đã xác thực' : 'Chưa xác thực'}
+                                </span>
+                            </div>
+                        </div>
+                        <div className={styles.statCard}>
+                            <span className={styles.statIcon}>📅</span>
+                            <div className={styles.statContent}>
+                                <span className={styles.statLabel}>Tham gia</span>
+                                <span className={styles.statValue}>{new Date(user.createdAt).toLocaleDateString('vi-VN')}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className={styles.navTabs}>
+                <div className={styles.tabsContainer}>
+                    <button 
+                        className={`${styles.tab} ${activeTab === 'overview' ? styles.active : ''}`}
+                        onClick={() => setActiveTab('overview')}
+                    >
+                        Tổng quan
+                    </button>
+                    <button 
+                        className={`${styles.tab} ${activeTab === 'bookings' ? styles.active : ''}`}
+                        onClick={() => setActiveTab('bookings')}
+                    >
+                        Lịch sử đặt sân
+                    </button>
+                    <button 
+                        className={`${styles.tab} ${activeTab === 'matches' ? styles.active : ''}`}
+                        onClick={() => setActiveTab('matches')}
+                    >
+                        Ghép trận
+                    </button>
+                    <button 
+                        className={`${styles.tab} ${activeTab === 'favorites' ? styles.active : ''}`}
+                        onClick={() => setActiveTab('favorites')}
+                    >
+                        Yêu thích
+                    </button>
+                    <button 
+                        className={`${styles.tab} ${activeTab === 'notifications' ? styles.active : ''}`}
+                        onClick={() => setActiveTab('notifications')}
+                    >
+                        Thông báo
+                    </button>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className={styles.mainContent}>
+                <div className={styles.layout}>
+                    {/* Left Column */}
+                    <div className={styles.leftColumn}>
+                        {/* Edit Form */}
+                        {editing && (
+                            <div className={styles.editCard}>
+                                <h2>Chỉnh sửa hồ sơ</h2>
+
+                                {message && (
+                                    <div className={styles.message} style={{ 
+                                        background: message.startsWith('✅') ? '#F0FDF4' : '#FEF2F2',
+                                        color: message.startsWith('✅') ? '#10B981' : '#DC2626'
+                                    }}>
+                                        {message}
+                                    </div>
+                                )}
+
+                                <form onSubmit={handleSave}>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Họ và tên</label>
+                                        <input
+                                            type="text"
+                                            className={styles.formInput}
+                                            value={form.fullName}
+                                            onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Số điện thoại</label>
+                                        <input
+                                            type="tel"
+                                            className={styles.formInput}
+                                            placeholder="0901234567"
+                                            value={form.phone}
+                                            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Avatar URL</label>
+                                        <input
+                                            type="url"
+                                            className={styles.formInput}
+                                            placeholder="https://example.com/avatar.jpg"
+                                            value={form.avatarUrl}
+                                            onChange={(e) => setForm({ ...form, avatarUrl: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div className={styles.formActions}>
+                                        <button type="submit" className={styles.saveButton} disabled={saving}>
+                                            {saving ? '💾 Đang lưu...' : '💾 Lưu'}
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            className={styles.cancelButton} 
+                                            onClick={() => { setEditing(false); setMessage(''); }}
+                                        >
+                                            Hủy
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        )}
+
+                        {/* Activity Stats */}
+                        <div className={styles.card}>
+                            <h2 className={styles.cardTitle}>Thống kê hoạt động</h2>
+                            <div className={styles.activityGrid}>
+                                <div className={styles.activityBox}>
+                                    <div className={`${styles.activityIconWrap} ${styles.purple}`}>
+                                        🏟️
+                                    </div>
+                                    <div className={styles.activityNumber}>0</div>
+                                    <div className={styles.activityLabel}>Lượt đặt</div>
+                                </div>
+                                <div className={styles.activityBox}>
+                                    <div className={`${styles.activityIconWrap} ${styles.yellow}`}>
+                                        🤝
+                                    </div>
+                                    <div className={styles.activityNumber}>0</div>
+                                    <div className={styles.activityLabel}>Trận đấu</div>
+                                </div>
+                                <div className={styles.activityBox}>
+                                    <div className={`${styles.activityIconWrap} ${styles.yellow}`}>
+                                        ⭐
+                                    </div>
+                                    <div className={styles.activityLabel} style={{ fontSize: '20px', fontWeight: 600, color: '#6B7280', marginTop: '1rem' }}>
+                                        Chưa có
+                                    </div>
+                                    <div className={styles.activityLabel} style={{ color: '#9CA3AF' }}>đánh giá</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Recent Bookings */}
+                        <div className={styles.card}>
+                            <h2 className={styles.cardTitle}>Đặt sân gần đây</h2>
+                            <div className={styles.emptyState}>
+                                <div className={styles.emptyIcon}>📅</div>
+                                <div className={styles.emptyText}>Bạn chưa có lịch đặt sân nào</div>
+                                <button className={styles.emptyButton} onClick={() => router.push('/venues')}>
+                                    Tìm sân ngay
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column - Quick Links */}
+                    <div className={styles.rightColumn}>
+                        <div className={`${styles.card} ${styles.quickLinks}`}>
+                            <h3 className={styles.cardTitle}>Truy cập nhanh</h3>
+                            <div className={styles.linkGrid}>
+                                {user.role === 'CUSTOMER' && (
+                                    <>
+                                        <button className={styles.linkCard} onClick={() => router.push('/bookings')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.blue}`}>📅</div>
+                                            <strong>Đặt sân của tôi</strong>
+                                        </button>
+                                        <button className={styles.linkCard} onClick={() => router.push('/matchmaking')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.yellow}`}>🏆</div>
+                                            <strong>Ghép trận</strong>
+                                        </button>
+                                    </>
+                                )}
+                                {user.role === 'OWNER' && (
+                                    <>
+                                        <button className={styles.linkCard} onClick={() => router.push('/owner/venues')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.blue}`}>🏟️</div>
+                                            <strong>Quản lý sân</strong>
+                                        </button>
+                                        <button className={styles.linkCard} onClick={() => router.push('/owner/bookings')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.yellow}`}>📋</div>
+                                            <strong>Lịch đặt sân</strong>
+                                        </button>
+                                    </>
+                                )}
+                                {user.role === 'ADMIN' && (
+                                    <>
+                                        <button className={styles.linkCard} onClick={() => router.push('/admin/venues')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.blue}`}>✅</div>
+                                            <strong>Duyệt sân</strong>
+                                        </button>
+                                        <button className={styles.linkCard} onClick={() => router.push('/admin/users')}>
+                                            <div className={`${styles.linkIconWrap} ${styles.yellow}`}>👥</div>
+                                            <strong>Quản lý users</strong>
+                                        </button>
+                                    </>
+                                )}
+                                <button className={styles.linkCard} onClick={() => router.push('/chat')}>
+                                    <div className={`${styles.linkIconWrap} ${styles.purple}`}>💬</div>
+                                    <strong>Tin nhắn</strong>
+                                </button>
+                                <button className={styles.linkCard} onClick={() => router.push('/notifications')}>
+                                    <div className={`${styles.linkIconWrap} ${styles.orange}`}>🔔</div>
+                                    <strong>Thông báo</strong>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
