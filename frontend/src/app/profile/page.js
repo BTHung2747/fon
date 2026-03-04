@@ -125,13 +125,19 @@ export default function ProfilePage() {
                     </button>
                     <button 
                         className={`${styles.tab} ${activeTab === 'bookings' ? styles.active : ''}`}
-                        onClick={() => setActiveTab('bookings')}
+                        onClick={() => {
+                            setActiveTab('bookings');
+                            router.push('/bookings');
+                        }}
                     >
                         Lịch sử đặt sân
                     </button>
                     <button 
                         className={`${styles.tab} ${activeTab === 'matches' ? styles.active : ''}`}
-                        onClick={() => setActiveTab('matches')}
+                        onClick={() => {
+                            setActiveTab('matches');
+                            router.push('/matchmaking');
+                        }}
                     >
                         Ghép trận
                     </button>
@@ -143,7 +149,10 @@ export default function ProfilePage() {
                     </button>
                     <button 
                         className={`${styles.tab} ${activeTab === 'notifications' ? styles.active : ''}`}
-                        onClick={() => setActiveTab('notifications')}
+                        onClick={() => {
+                            setActiveTab('notifications');
+                            router.push('/notifications');
+                        }}
                     >
                         Thông báo
                     </button>
@@ -251,7 +260,12 @@ export default function ProfilePage() {
 
                         {/* Recent Bookings */}
                         <div className={styles.card}>
-                            <h2 className={styles.cardTitle}>Đặt sân gần đây</h2>
+                            <div className={styles.cardHeader}>
+                                <h2 className={styles.cardTitle}>Đặt sân gần đây</h2>
+                                <button className={styles.viewAllBtn} onClick={() => router.push('/bookings')}>
+                                    Xem tất cả →
+                                </button>
+                            </div>
                             <div className={styles.emptyState}>
                                 <div className={styles.emptyIcon}>📅</div>
                                 <div className={styles.emptyText}>Bạn chưa có lịch đặt sân nào</div>
@@ -269,7 +283,7 @@ export default function ProfilePage() {
                             <div className={styles.linkGrid}>
                                 {user.role === 'CUSTOMER' && (
                                     <>
-                                        <button className={styles.linkCard} onClick={() => router.push('/bookings')}>
+                                        <button className={styles.linkCard} onClick={() => router.push('/venues')}>
                                             <div className={`${styles.linkIconWrap} ${styles.blue}`}>📅</div>
                                             <strong>Đặt sân của tôi</strong>
                                         </button>

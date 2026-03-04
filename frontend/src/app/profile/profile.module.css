@@ -213,6 +213,34 @@
     margin-bottom: 1.5rem;
 }
 
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.cardHeader .cardTitle {
+    margin-bottom: 0;
+}
+
+.viewAllBtn {
+    background: none;
+    border: none;
+    color: #FF6E40;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.viewAllBtn:hover {
+    background: rgba(255, 110, 64, 0.1);
+    transform: translateX(4px);
+}
+
 /* Activity Stats */
 .activityGrid {
     display: grid;
